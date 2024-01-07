@@ -1,89 +1,299 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Drum Machine</title>
-  </head>
-  <body>
 
-    <div id="drum-machine">
-      <div class="drum-pads">
-        <div class="drum-pad" id="Heater-1">Q
-          <audio class="clip" id="Q" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Heater-2">W
-          <audio class="clip" id="W" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Heater-3">E
-          <audio class="clip" id="E" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Heater-4">A
-          <audio class="clip" id="A" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Clap">S
-          <audio class="clip" id="S" src="https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Open-HH">D
-          <audio class="clip" id="D" src="https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Kick-n'-hat">Z
-          <audio class="clip" id="Z" src="https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Kick">X
-          <audio class="clip" id="X" src="https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3"></audio>
-        </div>
-        <div class="drum-pad" id="Closed-HH">C
-          <audio class="clip" id="C" src="https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3"></audio>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Drum Machine</title>
+</head>
+
+<body>
+
+  <div id="drum-machine">
+    <div class="drum-pads">
+      <div class="drum-pad" id="Heater-1">Q
+        <audio class="clip" id="Q"></audio>
+      </div>
+      <div class="drum-pad" id="Heater-2">W
+        <audio class="clip" id="W"></audio>
+      </div>
+      <div class="drum-pad" id="Heater-3">E
+        <audio class="clip" id="E"></audio>
+      </div>
+      <div class="drum-pad" id="Heater-4">A
+        <audio class="clip" id="A"></audio>
+      </div>
+      <div class="drum-pad" id="Clap">S
+        <audio class="clip" id="S"></audio>
+      </div>
+      <div class="drum-pad" id="Open-HH">D
+        <audio class="clip" id="D"></audio>
+      </div>
+      <div class="drum-pad" id="Kick-n'-hat">Z
+        <audio class="clip" id="Z"></audio>
+      </div>
+      <div class="drum-pad" id="Kick">X
+        <audio class="clip" id="X"></audio>
+      </div>
+      <div class="drum-pad" id="Closed-HH">C
+        <audio class="clip" id="C"></audio>
+      </div>
+    </div>
+    <div class="logo">
+      <div class="inner-logo ">FCC&nbsp;</div>
+      <i class="inner-logo fa fa-free-code-camp"></i>
+    </div>
+    <div class="controls-container">
+      <div class="control">
+        <p>Power</p>
+        <div class="select">
+          <div class="inner" style="float: left;"></div>
         </div>
       </div>
-      <div class="logo">
-        <div class="inner-logo ">FCC&nbsp;</div>
-        <i class="inner-logo fa fa-free-code-camp"></i>
+      <p style="margin-bottom: 0;">Display</p>
+      <p id="display" style="margin-top: 2px;">Power: OFF</p>
+      <div class="volume-slider">
+        <input max="1" min="0" step="0.01" type="range" value="0.3">
       </div>
-      <div class="controls-container">
-        <div class="control">
-          <p>Power</p>
-          <div class="select"><div class="inner" style="float: right;"></div></div>
-        </div>
-        <p id="display"></p>
-        <div class="volume-slider">
-          <input max="1" min="0" step="0.01" type="range" value="0.3">
-        </div>
-        <div class="control">
-          <p>Bank</p>
-          <div class="select"><div class="inner" style="float: left;"></div></div>
+      <div class="control">
+        <p>Bank</p>
+        <div class="select">
+          <div class="inner" style="float: left;"></div>
         </div>
       </div>
     </div>
-    
-    <script>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      "use stric"
       const drumPads = document.querySelectorAll('.drum-pad');
+      const controls = document.querySelectorAll('.control');
+      const display = document.getElementById('display');
+      const volumeSlider = document.querySelector('.volume-slider input');
+      const audios = document.querySelectorAll('.clip');
+
+      const audiosURL1 = [{
+        keyCode: 81,
+        keyTrigger: "Q",
+        id: "Heater-1",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3"
+      }, {
+        keyCode: 87,
+        keyTrigger: "W",
+        id: "Heater-2",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3"
+      }, {
+        keyCode: 69,
+        keyTrigger: "E",
+        id: "Heater-3",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3"
+      }, {
+        keyCode: 65,
+        keyTrigger: "A",
+        id: "Heater-4",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3"
+      }, {
+        keyCode: 83,
+        keyTrigger: "S",
+        id: "Clap",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3"
+      }, {
+        keyCode: 68,
+        keyTrigger: "D",
+        id: "Open-HH",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3"
+      }, {
+        keyCode: 90,
+        keyTrigger: "Z",
+        id: "Kick-n'-Hat",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3"
+      }, {
+        keyCode: 88,
+        keyTrigger: "X",
+        id: "Kick",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3"
+      }, {
+        keyCode: 67,
+        keyTrigger: "C",
+        id: "Closed-HH",
+        url: "https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3"
+      }],
+        audiosURL2 = [{
+          keyCode: 81,
+          keyTrigger: "Q",
+          id: "Chord-1",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3"
+        }, {
+          keyCode: 87,
+          keyTrigger: "W",
+          id: "Chord-2",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3"
+        }, {
+          keyCode: 69,
+          keyTrigger: "E",
+          id: "Chord-3",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3"
+        }, {
+          keyCode: 65,
+          keyTrigger: "A",
+          id: "Shaker",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3"
+        }, {
+          keyCode: 83,
+          keyTrigger: "S",
+          id: "Open-HH",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3"
+        }, {
+          keyCode: 68,
+          keyTrigger: "D",
+          id: "Closed-HH",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3"
+        }, {
+          keyCode: 90,
+          keyTrigger: "Z",
+          id: "Punchy-Kick",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3"
+        }, {
+          keyCode: 88,
+          keyTrigger: "X",
+          id: "Side-Stick",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3"
+        }, {
+          keyCode: 67,
+          keyTrigger: "C",
+          id: "Snare",
+          url: "https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3"
+        }],
+        play = {
+          backgroundColor: "orange",
+          boxShadow: "0 3px orange",
+          height: 77,
+          marginTop: 13
+        },
+        stop = {
+          backgroundColor: "grey",
+          marginTop: 10,
+          boxShadow: "3px 3px 5px black"
+        };
+
+        function removeTransition(e) {
+          if (
+            e.propertyName !== 'height' &&
+            e.propertyName !== 'margin-top' &&
+            e.propertyName !== 'box-shadow'
+          ) {
+            return;
+          }
+          e.target.classList.remove('play', 'playing');
+        }
+
+      function disableControls() {
+        controls[1].removeEventListener('click', handleBankSwitch);
+        volumeSlider.disabled = true;
+      }
+
+      function enableControls() {
+        controls[1].addEventListener('click', handleBankSwitch);
+        volumeSlider.disabled = false;
+      }
+
+      function handleBankSwitch() {
+        console.log('Running . . .');
+        const inner = controls[1].querySelector('.inner');
+        if (inner.style.float == 'left') {
+          inner.style.float = 'right';
+          display.innerText = 'Smooth Piano Kit';
+          audios.forEach((audio, i) => {
+            audio.src = audiosURL2[i].url;
+            audio.parentNode.id = audiosURL2[i].id
+          });
+        } else {
+          console.log('Run');
+          inner.style.float = 'left';
+          display.innerText = 'Heater Kit';
+          audios.forEach((audio, i) => {
+            audio.src = audiosURL1[i].url;
+            audio.parentNode.id = audiosURL1[i].id;
+          });
+        }
+      }
 
       drumPads.forEach((pad) => {
         pad.addEventListener('click', () => {
-          const audio = pad.querySelector('.clip');
-          audio.currentTime = 0;
-          audio.play();
-          // Update the display with the description of the audio clip
-          document.getElementById('display').innerText = pad.id;
+          const inner = controls[0].querySelector('.inner');
+          console.log(inner.style.float);
+          if (inner.style.float == 'right') {
+            const audio = pad.querySelector('.clip');
+            pad.classList.add('playing');
+            audio.currentTime = 0;
+            audio.play();
+            display.innerText = pad.id;
+          } else {
+            pad.classList.add('play');
+          }
         });
 
         document.addEventListener('keydown', (event) => {
           if (event.key.toUpperCase() === pad.innerText) {
-            const audio = pad.querySelector('.clip');
-            audio.currentTime = 0;
-            audio.play();
-            // Update the display with the description of the audio clip
-            document.getElementById('display').innerText = pad.id;
+            const inner = controls[0].querySelector('.inner');
+            
+            if (inner.style.float == 'right') {
+              const audio = pad.querySelector('.clip');
+              pad.classList.add('playing');
+              audio.currentTime = 0;
+              audio.play();
+              display.innerText = pad.id;
+            } else {
+              return;
+            }
           }
         });
-      });
-    </script>
 
-    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
-  </body>
+        pad.addEventListener('transitionend', removeTransition);
+      });
+
+      controls[0].addEventListener('click', () => {
+        const inner = controls[0].querySelector('.inner');
+        if (inner.style.float == 'right') {
+          inner.style.float = 'left';
+          display.innerText = 'Power: OFF';
+          audios.forEach(audio => audio.src = '#');
+          disableControls();
+        } else {
+          inner.style.float = 'right';
+          display.innerText = 'Power: ON';
+          audios.forEach((audio, i) => {
+            const inner = controls[1].querySelector('.inner');
+            if (inner.style.float == 'left') {
+              audio.src = audiosURL1[i].url;
+              audio.parentNode.id = audiosURL1[i].id;
+            } else {
+              audio.src = audiosURL2[i].url;
+              audio.parentNode = audiosURL2[i].id;
+            }
+          });
+
+          controls[1].addEventListener('click', handleBankSwitch);
+
+          volumeSlider.addEventListener('input', () => {
+            const volume = volumeSlider.value;
+            audios.forEach((audio) => {
+              audio.volume = volume;
+            });
+            display.innerText = `Volume: ${Math.floor(volume * 100)}`;
+          });
+
+          enableControls();
+        }
+      });
+    });
+  </script>
+
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+</body>
+
 </html>
