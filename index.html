@@ -53,8 +53,7 @@
           <div class="inner" style="float: left;"></div>
         </div>
       </div>
-      <p style="margin-bottom: 0;">Display</p>
-      <p id="display" style="margin-top: 2px;">Power: OFF</p>
+      <p id="display">Power: OFF</p>
       <div class="volume-slider">
         <input max="1" min="0" step="0.01" type="range" value="0.3">
       </div>
@@ -71,10 +70,11 @@
     document.addEventListener('DOMContentLoaded', function () {
       "use stric"
       const drumPads = document.querySelectorAll('.drum-pad');
-      const controls = document.querySelectorAll('.control');
-      const display = document.getElementById('display');
-      const volumeSlider = document.querySelector('.volume-slider input');
       const audios = document.querySelectorAll('.clip');
+      const powerElement = document.querySelectorAll('.control .inner')[0];
+      const bankElement = document.querySelectorAll('.control .inner')[1];
+      const volumeSlider = document.querySelector('.volume-slider input');
+      const display = document.getElementById('display');
 
       const audiosURL1 = [{
         keyCode: 81,
@@ -180,116 +180,88 @@
           boxShadow: "3px 3px 5px black"
         };
 
-        function removeTransition(e) {
-          if (
-            e.propertyName !== 'height' &&
-            e.propertyName !== 'margin-top' &&
-            e.propertyName !== 'box-shadow'
-          ) {
-            return;
-          }
+      function removeTransition(e) {
+        if (['height', 'margin-top', 'box-shadow'].includes(e.propertyName)) {
           e.target.classList.remove('play', 'playing');
         }
+      }
 
       function disableControls() {
-        controls[1].removeEventListener('click', handleBankSwitch);
+        bankElement.removeEventListener('click', bankSwitchHandler);
         volumeSlider.disabled = true;
       }
 
       function enableControls() {
-        controls[1].addEventListener('click', handleBankSwitch);
+        bankElement.addEventListener('click', bankSwitchHandler);
         volumeSlider.disabled = false;
       }
+      
+      function setAudioData(selectedBank) {
+        audios.forEach((audio, i) => {
+          audio.src = selectedBank[i].url;
+          audio.parentNode.id = selectedBank[i].id;
+        });
+      }
 
-      function handleBankSwitch() {
-        console.log('Running . . .');
-        const inner = controls[1].querySelector('.inner');
-        if (inner.style.float == 'left') {
-          inner.style.float = 'right';
-          display.innerText = 'Smooth Piano Kit';
-          audios.forEach((audio, i) => {
-            audio.src = audiosURL2[i].url;
-            audio.parentNode.id = audiosURL2[i].id
-          });
+      function powerSwitchHandler() {
+        const selectedBank = (bankElement.style.float === 'left') ? audiosURL1 : audiosURL2;
+
+        powerElement.style.float = (powerElement.style.float === 'left') ? 'right' : 'left';
+        display.innerText = (powerElement.style.float === 'left') ? 'Power: OFF' : 'Power: ON';
+
+        if (powerElement.style.float === 'left') {
+          disableControls();
+          audios.forEach(audio => audio.src = '#');
         } else {
-          console.log('Run');
-          inner.style.float = 'left';
-          display.innerText = 'Heater Kit';
-          audios.forEach((audio, i) => {
-            audio.src = audiosURL1[i].url;
-            audio.parentNode.id = audiosURL1[i].id;
-          });
+          enableControls();
+          setAudioData(selectedBank);
         }
       }
 
+      function bankSwitchHandler() {
+        const selectedBank = (bankElement.style.float === 'left') ? audiosURL2 : audiosURL1;
+        const bankName = (bankElement.style.float === 'left') ? 'Smooth Piano Kit' : 'Heater Kit';
+
+        bankElement.style.float = (bankElement.style.float === 'left') ? 'right' : 'left';
+        display.innerText = bankName;
+        setAudioData(selectedBank);
+      }
+
+      function playAudio(pad) {
+        if (powerElement.style.float === 'right') {
+          const audio = pad.querySelector('.clip');
+          pad.classList.add('playing');
+          audio.currentTime = 0;
+          audio.play();
+          display.innerText = pad.id;
+        } else {
+          pad.classList.add('play');
+        }
+      }
+
+      disableControls();
+
       drumPads.forEach((pad) => {
-        pad.addEventListener('click', () => {
-          const inner = controls[0].querySelector('.inner');
-          console.log(inner.style.float);
-          if (inner.style.float == 'right') {
-            const audio = pad.querySelector('.clip');
-            pad.classList.add('playing');
-            audio.currentTime = 0;
-            audio.play();
-            display.innerText = pad.id;
-          } else {
-            pad.classList.add('play');
-          }
-        });
+        pad.addEventListener('click', () => playAudio(pad));
+        pad.addEventListener('transitionend', removeTransition);
 
         document.addEventListener('keydown', (event) => {
           if (event.key.toUpperCase() === pad.innerText) {
-            const inner = controls[0].querySelector('.inner');
-            
-            if (inner.style.float == 'right') {
-              const audio = pad.querySelector('.clip');
-              pad.classList.add('playing');
-              audio.currentTime = 0;
-              audio.play();
-              display.innerText = pad.id;
-            } else {
-              return;
-            }
+            playAudio(pad);
           }
         });
-
-        pad.addEventListener('transitionend', removeTransition);
       });
 
-      controls[0].addEventListener('click', () => {
-        const inner = controls[0].querySelector('.inner');
-        if (inner.style.float == 'right') {
-          inner.style.float = 'left';
-          display.innerText = 'Power: OFF';
-          audios.forEach(audio => audio.src = '#');
-          disableControls();
-        } else {
-          inner.style.float = 'right';
-          display.innerText = 'Power: ON';
-          audios.forEach((audio, i) => {
-            const inner = controls[1].querySelector('.inner');
-            if (inner.style.float == 'left') {
-              audio.src = audiosURL1[i].url;
-              audio.parentNode.id = audiosURL1[i].id;
-            } else {
-              audio.src = audiosURL2[i].url;
-              audio.parentNode = audiosURL2[i].id;
-            }
-          });
+      powerElement.addEventListener('click', powerSwitchHandler);
 
-          controls[1].addEventListener('click', handleBankSwitch);
-
-          volumeSlider.addEventListener('input', () => {
-            const volume = volumeSlider.value;
-            audios.forEach((audio) => {
-              audio.volume = volume;
-            });
-            display.innerText = `Volume: ${Math.floor(volume * 100)}`;
-          });
-
-          enableControls();
-        }
+      volumeSlider.addEventListener('input', () => {
+        const volume = volumeSlider.value;
+        audios.forEach((audio) => {
+          audio.volume = volume;
+        });
+        display.innerText = `Volume: ${Math.floor(volume * 100)}`;
       });
+      
     });
   </script>
 
