@@ -252,7 +252,7 @@
         });
       });
 
-      powerElement.addEventListener('click', powerSwitchHandler);
+      powerElement.parentNode.addEventListener('click', powerSwitchHandler);
 
       volumeSlider.addEventListener('input', () => {
         const volume = volumeSlider.value;
