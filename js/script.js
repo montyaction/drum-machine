@@ -1,6 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', function () {
-  "use stric"
+  "use strict"
   const drumPads = document.querySelectorAll('.drum-pad');
   const audios = document.querySelectorAll('.clip');
   const powerElement = document.querySelectorAll('.control .inner')[0];
