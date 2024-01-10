@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
       url: "https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3"
     }];
 
-
   function removeTransition(e) {
     if (['height', 'margin-top', 'box-shadow'].includes(e.propertyName)) {
       e.target.classList.remove('play', 'playing');
