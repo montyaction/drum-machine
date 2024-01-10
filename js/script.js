@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
     keyTrigger: "C",
     id: "Closed-HH",
     url: "https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3"
-  }],
+    }],
     audiosURL2 = [{
       keyCode: 81,
       keyTrigger: "Q",
@@ -119,20 +119,40 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function disableControls() {
-    bankElement.removeEventListener('click', bankSwitchHandler);
+    bankElement.parentNode.removeEventListener('click', bankSwitchHandler);
     volumeSlider.disabled = true;
   }
 
   function enableControls() {
-    bankElement.addEventListener('click', bankSwitchHandler);
+    bankElement.parentNode.addEventListener('click', bankSwitchHandler);
     volumeSlider.disabled = false;
   }
   
   function setAudioData(selectedBank) {
     audios.forEach((audio, i) => {
-      audio.src = selectedBank[i].url;
+      audio.keyCode = selectedBank[i].keyCode;
+      audio.keyTrigger = selectedBank[i].keyTrigger;
       audio.parentNode.id = selectedBank[i].id;
+      audio.src = selectedBank[i].url;
     });
+  }
+
+  function playAudio(pad) {
+    if (powerElement.style.float === 'right') {
+      const audio = pad.querySelector('.clip');
+      pad.classList.add('playing');
+      audio.currentTime = 0;
+      audio.play();
+      display.innerText = pad.id;
+    } else {
+      pad.classList.add('play');
+    }
+  }
+
+  function handelKeyPress(e) {
+    const audio = document.getElementById(e.key.toUpperCase());
+    const pad = audio.parentNode;
+    playAudio(pad);
   }
 
   function powerSwitchHandler() {
@@ -149,7 +169,15 @@ document.addEventListener('DOMContentLoaded', function () {
       setAudioData(selectedBank);
     }
   }
-
+  
+  function volumeSliderHandler() {
+    const volume = volumeSlider.value;
+    audios.forEach((audio) => {
+      audio.volume = volume;
+    });
+    display.innerText = `Volume: ${Math.floor(volume * 100)}`;
+  }
+  
   function bankSwitchHandler() {
     const selectedBank = (bankElement.style.float === 'left') ? audiosURL2 : audiosURL1;
     const bankName = (bankElement.style.float === 'left') ? 'Smooth Piano Kit' : 'Heater Kit';
@@ -158,40 +186,15 @@ document.addEventListener('DOMContentLoaded', function () {
     display.innerText = bankName;
     setAudioData(selectedBank);
   }
-
-  function playAudio(pad) {
-    if (powerElement.style.float === 'right') {
-      const audio = pad.querySelector('.clip');
-      pad.classList.add('playing');
-      audio.currentTime = 0;
-      audio.play();
-      display.innerText = pad.id;
-    } else {
-      pad.classList.add('play');
-    }
-  }
-
+  
   disableControls();
 
   drumPads.forEach((pad) => {
     pad.addEventListener('click', () => playAudio(pad));
     pad.addEventListener('transitionend', removeTransition);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key.toUpperCase() === pad.innerText) {
-        playAudio(pad);
-      }
-    });
   });
+  document.addEventListener('keydown', handelKeyPress);
 
   powerElement.parentNode.addEventListener('click', powerSwitchHandler);
-
-  volumeSlider.addEventListener('input', () => {
-    const volume = volumeSlider.value;
-    audios.forEach((audio) => {
-      audio.volume = volume;
-    });
-    display.innerText = `Volume: ${Math.floor(volume * 100)}`;
-  });
-  
+  volumeSlider.addEventListener('input', volumeSliderHandler);
 });
