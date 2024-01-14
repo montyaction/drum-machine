@@ -12,20 +12,6 @@ body {
   background-color: #8d8d8d;
 }
 
-#drum-machine .drum-pads .playing {
-    background-color: blue;
-    border-color: blue;
-    box-shadow: 0 3px blue;
-    margin-top: 13px;
-    height: 77px;
-}
-
-#drum-machine .drum-pads .play {
-  height: 77px;
-  margin-top: 13px;
-  box-shadow: 0 3px grey;
-}
-
 #drum-machine {
   outline: 5px solid blue;
   position: relative;
@@ -39,6 +25,7 @@ body {
   display: inline-block;
   margin: 20px;
 }
+
 #drum-machine .drum-pads .drum-pad {
   position: relative;
   float: left;
